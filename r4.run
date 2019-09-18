@@ -1,0 +1,97 @@
+reset;
+model M4.mod;
+include ig.INIVAL;
+option solver ipopt;
+solve;
+
+shell ("del " & ("sol_status.txt"));
+if match (solve_message, "Optimal") > 0 then
+{
+printf "1">>("sol_status.txt");
+close ("sol_status.txt.INIVAL");
+shell ("del " & ("NE.txt"));
+shell ("del " & ("x.txt"));
+shell ("del " & ("y.txt"));
+shell ("del " & ("theta.txt"));
+shell ("del " & ("phy.txt"));
+shell ("del " & ("v.txt"));
+shell ("del " & ("tf.txt"));
+shell ("del " & ("AX.txt"));
+shell ("del " & ("BX.txt"));
+shell ("del " & ("CX.txt"));
+shell ("del " & ("DX.txt"));
+shell ("del " & ("AY.txt"));
+shell ("del " & ("BY.txt"));
+shell ("del " & ("CY.txt"));
+shell ("del " & ("DY.txt"));
+
+shell ("del " & ("ig.INIVAL"));
+for {car in {1..Nv}} {
+	for {i in {0..Nfe}} {
+		printf "let x[%d,%d]:=%5.4f;\n",i,car,x[i,car]>>("ig.INIVAL");
+		printf "let y[%d,%d]:=%5.4f;\n",i,car,y[i,car]>>("ig.INIVAL");
+		printf "let theta[%d,%d]:=%5.4f;\n",i,car,theta[i,car]>>("ig.INIVAL");
+		printf "let v[%d,%d]:=%5.4f;\n",i,car,v[i,car]>>("ig.INIVAL");
+		printf "let AX[%d,%d]:=%5.4f;\n",i,car,AX[i,car]>>("ig.INIVAL");
+		printf "let BX[%d,%d]:=%5.4f;\n",i,car,BX[i,car]>>("ig.INIVAL");
+		printf "let CX[%d,%d]:=%5.4f;\n",i,car,CX[i,car]>>("ig.INIVAL");
+		printf "let DX[%d,%d]:=%5.4f;\n",i,car,DX[i,car]>>("ig.INIVAL");
+		printf "let AY[%d,%d]:=%5.4f;\n",i,car,AY[i,car]>>("ig.INIVAL");
+		printf "let BY[%d,%d]:=%5.4f;\n",i,car,BY[i,car]>>("ig.INIVAL");
+		printf "let CY[%d,%d]:=%5.4f;\n",i,car,CY[i,car]>>("ig.INIVAL");
+		printf "let DY[%d,%d]:=%5.4f;\n",i,car,DY[i,car]>>("ig.INIVAL");		
+	}
+}
+for {i in {0..Nfe}} {
+    printf "let phy[%d]:=%5.4f;\n",i,phy[i]>>("ig.INIVAL");
+}
+printf "let tf:=%5.4f;\n", tf>>("ig.INIVAL");
+close ("ig.INIVAL");
+
+
+for {car in {1..Nv}} {
+	for {i in {0..Nfe}} {
+		printf "%5.4f; ", x[i,car]>>("x.txt");
+		printf "%5.4f; ", y[i,car]>>("y.txt");
+        printf "%5.4f; ", v[i,car]>>("v.txt");
+		printf "%5.4f; ", theta[i,car]>>("theta.txt");
+		printf "%5.4f; ", AX[i,car]>>("AX.txt");
+		printf "%5.4f; ", BX[i,car]>>("BX.txt");
+		printf "%5.4f; ", CX[i,car]>>("CX.txt");
+		printf "%5.4f; ", DX[i,car]>>("DX.txt");
+		printf "%5.4f; ", AY[i,car]>>("AY.txt");
+		printf "%5.4f; ", BY[i,car]>>("BY.txt");
+		printf "%5.4f; ", CY[i,car]>>("CY.txt");
+		printf "%5.4f; ", DY[i,car]>>("DY.txt");
+	}
+}
+for {i in {0..Nfe}} {
+	printf "%5.4f;", phy[i]>>("phy.txt");
+}
+printf "%5.4f;", tf>>("tf.txt");
+close ("tf.txt");
+printf "%5.4f;", Nfe>>("NE.txt");
+close ("NE.txt");
+
+close ("x.txt");
+close ("y.txt");
+close ("v.txt");
+close ("theta.txt");
+close ("phy.txt");
+
+close ("AX.txt");
+close ("AY.txt");
+close ("BX.txt");
+close ("BY.txt");
+close ("CX.txt");
+close ("CY.txt");
+close ("DX.txt");
+close ("DY.txt");
+display(tf);
+display(0.1 * sum{i in {1..Nfe}}((v[i,1]-v[i-1,1])^2 + (phy[i]-phy[i-1])^2) + tf);
+}
+else
+{
+    printf "0">>("sol_status.txt");
+	close ("sol_status.txt");
+};

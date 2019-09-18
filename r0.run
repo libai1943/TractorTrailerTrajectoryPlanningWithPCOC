@@ -1,0 +1,28 @@
+reset;
+model M0.mod;
+include ig0.INIVAL;
+option solver ipopt;
+solve;
+
+shell ("del " & ("ig0.INIVAL"));
+for {car in {1..Nv}} {
+	for {i in {0..Nfe}} {
+		printf "let x[%d,%d]:=%5.4f;\n",i,car,x[i,car]>>("ig0.INIVAL");
+		printf "let y[%d,%d]:=%5.4f;\n",i,car,y[i,car]>>("ig0.INIVAL");
+		printf "let theta[%d,%d]:=%5.4f;\n",i,car,theta[i,car]>>("ig0.INIVAL");
+		printf "let v[%d,%d]:=%5.4f;\n",i,car,v[i,car]>>("ig0.INIVAL");
+		printf "let AX[%d,%d]:=%5.4f;\n",i,car,AX[i,car]>>("ig0.INIVAL");
+		printf "let BX[%d,%d]:=%5.4f;\n",i,car,BX[i,car]>>("ig0.INIVAL");
+		printf "let CX[%d,%d]:=%5.4f;\n",i,car,CX[i,car]>>("ig0.INIVAL");
+		printf "let DX[%d,%d]:=%5.4f;\n",i,car,DX[i,car]>>("ig0.INIVAL");
+		printf "let AY[%d,%d]:=%5.4f;\n",i,car,AY[i,car]>>("ig0.INIVAL");
+		printf "let BY[%d,%d]:=%5.4f;\n",i,car,BY[i,car]>>("ig0.INIVAL");
+		printf "let CY[%d,%d]:=%5.4f;\n",i,car,CY[i,car]>>("ig0.INIVAL");
+		printf "let DY[%d,%d]:=%5.4f;\n",i,car,DY[i,car]>>("ig0.INIVAL");		
+	}
+}
+for {i in {0..Nfe}} {
+    printf "let phy[%d]:=%5.4f;\n",i,phy[i]>>("ig0.INIVAL");
+}
+printf "let tf:=%5.4f;\n", tf>>("ig0.INIVAL");
+close ("ig0.INIVAL");

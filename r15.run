@@ -1,0 +1,39 @@
+reset;
+model M1_5.mod;
+include ig.INIVAL;
+option solver ipopt;
+solve;
+
+shell ("del " & ("sol_status.txt"));
+if match (solve_message, "Optimal") > 0 then
+{
+printf "1">>("sol_status.txt");
+close ("sol_status.txt.INIVAL");
+shell ("del " & ("ig.INIVAL"));
+for {car in {1..Nv}} {
+	for {i in {0..Nfe}} {
+		printf "let x[%d,%d]:=%5.4f;\n",i,car,x[i,car]>>("ig.INIVAL");
+		printf "let y[%d,%d]:=%5.4f;\n",i,car,y[i,car]>>("ig.INIVAL");
+		printf "let theta[%d,%d]:=%5.4f;\n",i,car,theta[i,car]>>("ig.INIVAL");
+		printf "let v[%d,%d]:=%5.4f;\n",i,car,v[i,car]>>("ig.INIVAL");
+		printf "let AX[%d,%d]:=%5.4f;\n",i,car,AX[i,car]>>("ig.INIVAL");
+		printf "let BX[%d,%d]:=%5.4f;\n",i,car,BX[i,car]>>("ig.INIVAL");
+		printf "let CX[%d,%d]:=%5.4f;\n",i,car,CX[i,car]>>("ig.INIVAL");
+		printf "let DX[%d,%d]:=%5.4f;\n",i,car,DX[i,car]>>("ig.INIVAL");
+		printf "let AY[%d,%d]:=%5.4f;\n",i,car,AY[i,car]>>("ig.INIVAL");
+		printf "let BY[%d,%d]:=%5.4f;\n",i,car,BY[i,car]>>("ig.INIVAL");
+		printf "let CY[%d,%d]:=%5.4f;\n",i,car,CY[i,car]>>("ig.INIVAL");
+		printf "let DY[%d,%d]:=%5.4f;\n",i,car,DY[i,car]>>("ig.INIVAL");		
+	}
+}
+for {i in {0..Nfe}} {
+    printf "let phy[%d]:=%5.4f;\n",i,phy[i]>>("ig.INIVAL");
+}
+printf "let tf:=%5.4f;\n", tf>>("ig.INIVAL");
+close ("ig.INIVAL");
+}
+else
+{
+    printf "0">>("sol_status.txt");
+	close ("sol_status.txt");
+};
