@@ -1,5 +1,7 @@
 # Tractor–Trailer Planning with Progressively Constrained Optimal Control
 
+[Download ZIP](https://github.com/libai1943/TractorTrailerTrajectoryPlanningWithPCOC/archive/refs/heads/master.zip) · [Getting started](#setup-and-one-command-run) · [Guide](#functions-and-model-files) · [Citation](#citation)
+
 **Plan precise maneuvers for a tractor and three trailers in narrow environments.** This repository contains the MATLAB/AMPL implementation of **“Tractor-Trailer Vehicle Trajectory Planning in Narrow Environments With a Progressively Constrained Optimal Control Approach,”** published in *IEEE Transactions on Intelligent Vehicles*, 2020.
 
 The method supports on-axle and off-axle hitching. An extended Hybrid A* search generates an initial route, and a sequence of optimal-control subproblems introduces difficult constraints progressively. During collision refinement, an adaptive homotopy expands scaled obstacles toward their full size and reuses the previous solution as the next warm start.
@@ -38,6 +40,17 @@ Select the experiment using `test_case_number` near the top of `RunMe.m`:
 | `1.2`, `2.2`, `3.2` | Scene 1, 2 or 3 | Off-axle |
 
 The default is **`3.2`**. Keep the model, run scripts and output folders in their original locations. Run from a writable checkout because MATLAB and AMPL repeatedly exchange files. At completion, the entry script calls `dsa.p` to display the result; it stops with an error if the checked intermediate optimization stages fail.
+
+### Compare hitch geometries on one map
+
+Run `3.1` first, save the displayed trajectory and the solver outputs you need, then repeat with `3.2` in a separate working copy. The integer part selects the same obstacle scene in both runs. The last digit changes the hitch geometry. Compare the swept **trailer footprints** at the tightest turn as well as the tractor path.
+
+| Point in [the driver](RunMe.m) | What it tells you |
+|---|---|
+| After `PlanHybridAStarPath` and `ResampleConfig` | The search has produced an initial path for the optimizer. |
+| After `r2.run` | `GetOptimizationStatus()` gates entry into obstacle restoration. |
+| Inside the `r3.run` loop | `gamma_trial` is the scale attempted this cycle. Only a successful solve advances `gamma_achieved`. |
+| After `r4.run` | The driver invokes `dsa` to display the final result. |
 
 ## Functions and model files
 
